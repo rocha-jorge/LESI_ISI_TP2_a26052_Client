@@ -77,6 +77,8 @@ def main():
 
         if choice == 1:
             print("\nTemplate for Option 1: Get the total value of Bitcoin for an idUser")
+            print("Input required:")
+            print(" - idUser: (e.g., 1)")
             id_user = get_validated_input("Enter idUser: ", input_type=int)
             total_bitcoins = get_total_bitcoins(soap_wsdl_url, id_user)
             if total_bitcoins is not None:
@@ -91,6 +93,8 @@ def main():
 
         elif choice == 2:
             print("\nTemplate for Option 2: Get the total amount of Bitcoin for an idUser")
+            print("Input required:")
+            print(" - idUser: (e.g., 1)")
             id_user = get_validated_input("Enter idUser: ", input_type=int)
             total_bitcoins = get_total_bitcoins(soap_wsdl_url, id_user)
             if total_bitcoins is not None:
@@ -100,6 +104,12 @@ def main():
 
         elif choice == 3:
             print("\nTemplate for Option 3: Register a new transaction")
+            print("Input required:")
+            print(" - idUser: (e.g., 1)")
+            print(" - transactionType: 'buy' or 'sell'")
+            print(" - units: Number of Bitcoin units (e.g., 3)")
+            print(" - btcTimeStamp: Date and time (e.g., '2024-12-22T23:39:30.700')")
+
             id_user = get_validated_input("Enter idUser: ", input_type=int)
             transaction_type = get_validated_input("Enter transaction type (buy/sell): ", validation_fn=lambda x: x.lower() in {"buy", "sell"}).lower()
             units = get_validated_input("Enter units of Bitcoin: ", input_type=int)
