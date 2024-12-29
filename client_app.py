@@ -3,28 +3,32 @@ from methods import *
 # MAIN
 def main():
     transaction_api_url = "https://bitcoinappisia26052-a4dbf7g9e3fsg8eu.spaincentral-01.azurewebsites.net/api/Transaction"
+    transaction_user_api_url = "https://bitcoinappisia26052-a4dbf7g9e3fsg8eu.spaincentral-01.azurewebsites.net/api/Transaction/user"
     bitcoin_price_api_url = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"
     soap_wsdl_url = "https://bitcoinappsoap-drfmetbvf7dfcjcn.spaincentral-01.azurewebsites.net/UserBalanceSOAPService.svc?wsdl"
+    auth_url = "https://conexaoexcelapi-dnhtg3b8f3f7e6fv.southeastasia-01.azurewebsites.net/Authenticate"
+    jwt_token = None
 
     while True:
-        print("Menu:")
+        print("\nMenu:")
 
-        print("\n\tServiços que combinam SOAP, desenvolvido internamente, e API externa:")
+        print("\tServiços que combinam SOAP, desenvolvido internamente, e API externa:")
         print("\t\t1. Obter o valor total de Bitcoin, em USD, para um idUser.")
 
         print("\n\tServiços SOAP internos:")
         print("\t\t2. Obter a quantidade total de Bitcoin de um idUser.")
         
         print("\n\tServiços RESTFUL internos:")
-        print("\t\t3. Obter informação sobres as transações de um utilizador (GET/READ).")
-        print("\t\t4. Registar uma nova transação (POST/CREATE).")
-        print("\t\t5. Obter informação sobre uma transação (GET/READ).")
-        print("\t\t6. Alterar informação de uma transação (PUT/UPDATE).")
-        print("\t\t7. Apagar uma transação (DELETE/DELETE).")
+        print("\t\t3. Obter token de autenticação.")
+        print("\t\t4. Autenticar com o token obtido.")   
+        # print("\t\t5. Obter informação sobre as transações de um utilizador (GET/READ).")  FALTA FAZER ESTEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+        print("\t\t6. Registar uma nova transação (POST/CREATE).")
+        print("\t\t7. Obter informação sobre uma transação (GET/READ).")
+        print("\t\t8. Alterar informação de uma transação (PUT/UPDATE).")
+        print("\t\t9. Apagar uma transação (DELETE/DELETE).")
 
-
-        print("\n\t0. Sair da script.\n")
-        choice = get_validated_input("Escolha a opção: ", input_type=int, validation_fn=lambda x: 0 <= x <= 7)
+        print("\n\t10. Sair da script.\n")
+        choice = get_validated_input("Escolha a opção: ", input_type=int, validation_fn=lambda x: 0 <= x <= 9)
 
         # 1. Obter o valor total de Bitcoin, em USD, para um idUser
         if choice == 1: 
@@ -53,8 +57,41 @@ def main():
             else:
                 print("Não foi possível obter o total de Bitcoins.")
 
-        # 4. Registar uma nova transação
-        elif choice == 4:
+        # 3. Obter token de autenticação.
+        elif choice == 3:  
+            jwt_token = get_jwt_token(auth_url)
+            if jwt_token:
+                print("Token armazenado com sucesso.")
+            else:
+                print("Erro ao obter o token.")
+
+        # 4. Autenticar com o token obtido.
+        elif choice == 4:  
+            if jwt_token:
+                print(f"Token atual: {jwt_token}")
+            else:
+                print("Nenhum token armazenado. Por favor requisite o token primeiro.")
+
+        # 5. Get all transactions for a user
+        elif choice == 5:  # Get all transactions for a user
+            print("Inputs:")
+            print(" - idUser: (ex: 1)")
+            user_id = get_validated_input("Introduza o idUser: ", input_type=int)
+            transactions = get_user_transactions(transaction_user_api_url, user_id)
+            if transactions:
+                print(f"Transações do idUser {user_id} obtidas com sucesso.")
+            else:
+                print("Erro ao obter as transações.")
+
+        # 6. Obter informação sobre uma transação
+        elif choice == 6:
+            print("Inputs:")
+            print(" - idTransaction: (ex: 1)")
+            idTransaction = get_validated_input("Introduza o idTransaction da transação: ", input_type=int)
+            get_transaction(transaction_api_url,idTransaction)
+
+        # 7. Registar uma nova transação
+        elif choice == 7:
             print("Inputs:")
             print(" - idUser: (ex: 1)")
             print(" - transactionType: 'buy' ou 'sell'")
@@ -75,15 +112,8 @@ def main():
 
             post_transaction(transaction_api_url, post_transaction_payload)
 
-        # 5. Obter informação sobre uma transação
-        elif choice == 5:
-            print("Inputs:")
-            print(" - idTransaction: (ex: 1)")
-            idTransaction = get_validated_input("Introduza o idTransaction da transação: ", input_type=int)
-            get_transaction(transaction_api_url,idTransaction)
-
-        # 6. Alterar informação de uma transação
-        elif choice == 6:
+        # 8. Alterar informação de uma transação
+        elif choice == 8:
             print("Inputs:")
             print(" - idTransaction: (ex: 1)")
             print(" - idUser: (ex: 1)")
@@ -107,8 +137,8 @@ def main():
 
             put_transaction(transaction_api_url, idTransaction, put_transaction_payload)
         
-        # 7. Apagar uma transação (por idTransaction).
-        elif choice == 7:
+        # 9. Apagar uma transação (por idTransaction).
+        elif choice == 9:
             print("Inputs:")
             print(" - idTransaction: (ex: 1)")
             idTransaction = get_validated_input("Introduza o idTransaction da transação: ", input_type=int)

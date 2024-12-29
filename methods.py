@@ -2,6 +2,64 @@ import requests
 import json
 from zeep import Client
 
+# Function to get JWT Token
+def get_jwt_token(auth_url):
+
+    print("\nInputs for authentication:")
+    id = "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+    name = "nomeDeTeste"
+    email = "emailDeTeste"
+    password = "passwordDeTeste"
+    roles = input("Enter a role (admin): ").strip()
+
+    user_credentials = {
+        "id": id,
+        "name": name,
+        "email": email,
+        "password": password,
+        "roles": [roles]
+    }
+
+    try:
+        response = requests.post(auth_url, json=user_credentials)
+        print("Status Code da resposta:", response.status_code)
+        print("Body da resposta:", response.text)
+
+        if response.status_code == 200:
+            # If the token is returned as plain text, use response.text
+            token = response.text.strip()  # Strip any whitespace or newlines
+            print("JWT token obtido com sucesso.")
+            return token
+        else:
+            print(f"Erro ao obter JWT token: {response.text}")
+            return None
+    except Exception as e:
+        print(f"Erro ao tentar obter JWT token: {e}")
+        return None
+
+# GET TODAS AS TRANSACOES DE UM USER
+def get_user_transactions(transaction_user_api_url, user_id):
+
+    url = f"{transaction_user_api_url}?userId={user_id}"  # Assuming userId is a query parameter
+    print(f"URL chamada: {url}")
+
+    try:
+        response = requests.get(url)
+        print("Status Code da resposta:", response.status_code)
+        print("Body da resposta:", response.text)
+
+        if response.status_code == 200:
+            transactions = response.json()
+            print("Transações obtidas com sucesso:")
+            print(json.dumps(transactions, indent=4, ensure_ascii=False))
+            return transactions
+        else:
+            print(f"Erro ao obter as transações do utilizador: {response.text}")
+            return None
+    except Exception as e:
+        print(f"Erro ao tentar obter as transações do utilizador: {e}")
+        return None
+    
 # REGISTAR TRANSACAO
 def post_transaction(api_url, post_transaction_payload):
     json_payload = json.dumps(post_transaction_payload)
@@ -64,6 +122,7 @@ def put_transaction(api_url, idTransaction, put_transaction_payload):
         print(f"Falha ao atualizar a transação: {response.text}")
         return None
 
+# APAGAR TRANSACAO
 def delete_transaction(transaction_api_url, idTransaction):
     url = f"{transaction_api_url}/{idTransaction}"
     print(f"URL chamada: {url}")
