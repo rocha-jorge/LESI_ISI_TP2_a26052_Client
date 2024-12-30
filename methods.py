@@ -1,9 +1,8 @@
 import requests
 import json
 from zeep import Client
-# token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InN0cmluZyIsInJvbGUiOiJhZG1pbiIsIm5iZiI6MTczNTUxOTUwNSwiZXhwIjoxNzM1NTIwNDA1LCJpYXQiOjE3MzU1MTk1MDV9.2125UCi5iJXjWB-iVePYs3Saf05Rt_Zm6ALVCU1oESk"
 
-# Function to get JWT Token
+# TOKEN
 def get_jwt_token(auth_url):
 
     print("\nInputs for authentication:")
