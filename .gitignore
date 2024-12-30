@@ -1,1 +1,3 @@
 # GIT IGNORE
+__pychache__/
+venv/
